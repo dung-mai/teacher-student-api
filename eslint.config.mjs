@@ -1,6 +1,3 @@
-import typescriptEslint from '@typescript-eslint/eslint-plugin';
-import prettier from 'eslint-plugin-prettier';
-import globals from 'globals';
 import tsParser from '@typescript-eslint/parser';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -22,19 +19,10 @@ export default [
     'prettier',
   ),
   {
-    plugins: {
-      '@typescript-eslint': typescriptEslint,
-      prettier,
-    },
-
     languageOptions: {
-      globals: {
-        ...globals.node,
-      },
-
       parser: tsParser,
       ecmaVersion: 5,
-      sourceType: 'commonjs',
+      sourceType: 'module',
 
       parserOptions: {
         project: ['./tsconfig.json'],
@@ -42,7 +30,6 @@ export default [
     },
 
     rules: {
-      'prettier/prettier': 'error',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
     },

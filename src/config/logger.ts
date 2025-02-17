@@ -1,15 +1,22 @@
 import winston from 'winston';
 
-const { LOG_LEVEL = 'info' } = process.env;
+const isDev = process.env.NODE_ENV !== 'production';
+
+const devFormat = winston.format.combine(
+  winston.format.colorize(),
+  winston.format.timestamp(),
+  winston.format.printf(({ level, message, timestamp, ...meta }) => {
+    const metaString = Object.keys(meta).length
+      ? JSON.stringify(meta, null, 2)
+      : '';
+    return `[${timestamp}] [${level}]: ${message} ${metaString}`;
+  }),
+);
+
+const prodFormat = winston.format.json();
+
 export const logger = winston.createLogger({
-  level: LOG_LEVEL,
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json(),
-  ),
-  transports: [
-    new winston.transports.Console({
-      format: winston.format.simple(),
-    }),
-  ],
+  level: isDev ? 'debug' : 'info',
+  format: isDev ? devFormat : prodFormat,
+  transports: [new winston.transports.Console()],
 });

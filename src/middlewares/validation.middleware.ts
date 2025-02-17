@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { ZodError, ZodSchema } from 'zod';
 import { BadRequestError } from '../errors/BadRequestError';
-import { VALIDATION_ERROR } from '../constants';
+import { VALIDATION_ERROR } from '../constants/messages.constants';
 
 /**
  * Generic middleware that validates req.body, req.query, req.params
@@ -9,11 +9,6 @@ import { VALIDATION_ERROR } from '../constants';
  */
 export const validatePayload = (schema: ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const result = schema.safeParse({
-      body: req.body,
-      query: req.query,
-      params: req.params,
-    });
     try {
       schema.parse({
         body: req.body,
@@ -23,7 +18,16 @@ export const validatePayload = (schema: ZodSchema) => {
       return next();
     } catch (error) {
       if (error instanceof ZodError) {
-        throw new BadRequestError('Validation error', error.issues);
+        const transformedErrors = error.issues.map((issue) => {
+          const fieldPath = issue.path.join('.');
+          return {
+            field: fieldPath,
+            message: issue.message,
+          };
+        });
+
+        //Return first error
+        throw new BadRequestError('Validation Error', transformedErrors[0]);
       }
       return next(error);
     }

@@ -1,34 +1,35 @@
-# Build stage
-FROM node:18-alpine AS builder
-
+# ===================
+#    Stage 1: Build
+# ===================
+FROM node:18-alpine AS build
 WORKDIR /app
 
 RUN apk add --no-cache openssl
 
 # Install all dependencies
 COPY package*.json ./
+COPY tsconfig.json ./
 RUN npm install
 
-# Copy Prisma schema and generate client
-COPY prisma ./prisma
+# Copy the rest of the application code and build
+COPY ./src ./src
+COPY ./prisma ./prisma
 RUN npx prisma generate
 
-# Copy the rest of the application code and build
-COPY src ./src
 RUN npm run build
 
 # Runtime stage
-FROM node:18-alpine
-
+FROM node:18-alpine AS production
 WORKDIR /app
 
-# Install runtime tools for bcryptjs and Prisma migrations
 RUN apk add --no-cache openssl
 
-# Copy only runtime files from the build stage
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/prisma ./prisma
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/prisma ./prisma
 COPY package*.json ./
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]
+RUN npm ci --omit=dev
+
+EXPOSE 3000
+
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/server.js"]

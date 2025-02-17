@@ -41,12 +41,12 @@ const seedData = async () => {
   await prisma.teacherStudents.deleteMany();
   await prisma.teacher.deleteMany();
   await prisma.student.deleteMany();
-  const teacher = await prisma.teacher.createMany({
+  await prisma.teacher.createMany({
     data: Array.from({ length: 10 }, (_, i) => ({
       email: `teacher${i + 1}@gmail.com`,
     })),
   });
-  const student = await prisma.student.createMany({
+  await prisma.student.createMany({
     data: Array.from({ length: 10 }, (_, i) => ({
       email: `student${i + 1}@gmail.com`,
     })),

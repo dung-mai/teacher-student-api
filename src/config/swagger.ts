@@ -9,7 +9,7 @@ export const swaggerOptions: swaggerJSDoc.Options = {
     },
     servers: [
       {
-        url: `http://${process.env.HOST}:${process.env.PORT}`,
+        url: `http://${process.env.SERVER_HOST}:${process.env.SERVER_PORT}`,
       },
     ],
   },

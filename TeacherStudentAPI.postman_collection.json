@@ -1,0 +1,332 @@
+{
+  "info": {
+    "name": "Teacher-Student API",
+    "_postman_id": "f5615323-a77f-42d8-b71a-350dcf024eb3",
+    "description": "A professional Postman collection for the Teacher-Student API. Demonstrates each endpoint, with example payloads and usage instructions.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register Students - Success",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"teacher\": \"teacherken@example.com\",\n    \"students\": [\"student1@example.com\", \"student2@example.com\"]\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/register",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "register"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Status code is 204\", function () {",
+              "    pm.response.to.have.status(204);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Register Students - Missing Teacher",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"students\": [\"student1@example.com\"]\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/register",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "register"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Status code is 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Register Students - Empty Students Array",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"teacher\": \"teacherken@example.com\",\n    \"students\": []\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/register",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "register"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Status code is 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Common Students - Success",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{BASE_URL}}/api/commonstudents?teacher=teacherken@example.com&teacher=teacherjoe@example.com",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "commonstudents"],
+          "query": [
+            {
+              "key": "teacher",
+              "value": "teacherken@example.com"
+            },
+            {
+              "key": "teacher",
+              "value": "teacherjoe@example.com"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Common Students - Teacher Not Found",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{BASE_URL}}/api/commonstudents?teacher=unknown@example.com",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "commonstudents"],
+          "query": [
+            {
+              "key": "teacher",
+              "value": "unknown@example.com"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Suspend Student - Success",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"student\": \"student1@example.com\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/suspend",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "suspend"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Status code is 204\", function () {",
+              "    pm.response.to.have.status(204);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Suspend Student - Student Not Found",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"student\": \"unknown@example.com\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/suspend",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "suspend"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retrieve Students for Notification - Success",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"teacher\": \"teacherken@example.com\",\n    \"notification\": \"Hello students! @student3@example.com\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/retrievefornotifications",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "retrievefornotifications"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Retrieve Students for Notification - Teacher Not Found",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"teacher\": \"unknown@example.com\",\n    \"notification\": \"Hello students!\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/retrievefornotifications",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "retrievefornotifications"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Retrieve Students for Notification - Missing Teacher Field",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"notification\": \"Hello students!\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/retrievefornotifications",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "retrievefornotifications"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ],
+  "event": []
+}

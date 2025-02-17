@@ -4,12 +4,12 @@
     "module": "CommonJS", // if your project runs in Node.js with require() and module.exports.
     "strict": true, // Enables all strict type-checking features for safer TS code
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "./",
     "esModuleInterop": true, // Allows default import syntax (import express from "express";) for CommonJS modules.
     "skipLibCheck": true // Skip type checking of all declaration files (*.d.ts), thirt-party libraries.
     // "resolveJsonModule": true, // Allows importing JSON files as modules.
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "prisma/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
 

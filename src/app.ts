@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import appRoutes from './routes';
-import { ROUTE_PREFIX } from './constants';
+import { ROUTE_PREFIX } from './constants/config.constants';
 import swaggerJSDoc from 'swagger-jsdoc';
 import { swaggerOptions } from './config/swagger';
 import swaggerUi from 'swagger-ui-express';
@@ -14,7 +14,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-// Generate & attach a unique requestId to each request for log correlation
 app.use(requestIdMiddleware);
 
 // Setup swagger

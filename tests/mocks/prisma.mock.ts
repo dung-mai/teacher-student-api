@@ -11,6 +11,6 @@ export const prismaMock = {
   },
   teacherStudents: {
     findUnique: jest.fn(),
-    createMany: jest.fn(),
+    upsert: jest.fn(),
   },
 };

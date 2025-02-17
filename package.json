@@ -1,28 +1,39 @@
 {
-  "name": "offline-coding-be",
+  "name": "teacher-student-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "A Node.js API for managing teachers and students.",
+  "keywords": [
+    "nodejs",
+    "typescript",
+    "prisma",
+    "express",
+    "teacher-student"
+  ],
+  "main": "dist/src/server.js",
   "scripts": {
-    "dev": "nodemon",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "dev": "nodemon",
+    "start": "node dist/src/server.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "lint": "npx eslint .",
-    "prettier": "npx prettier --write ."
-  },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "prettier": "npx prettier --write .",
+    "seed:dev": "ts-node prisma/seed.ts",
+    "seed": "node dist/prisma/seed.js"
   },
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/teacher-student-api.git"
+  },
   "dependencies": {
     "@prisma/client": "^6.3.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "http-status-codes": "^2.3.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.0.5",

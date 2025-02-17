@@ -33,7 +33,7 @@ describe('TeacherService', () => {
       // Mock: All students found
       prismaMock.student.findMany.mockResolvedValue(students);
       // Mock: Successful registration
-      prismaMock.teacherStudents.createMany.mockResolvedValue(teacherStudents);
+      prismaMock.teacherStudents.upsert.mockResolvedValue(teacherStudents);
 
       // Act
       await registerStudents(teacher.email, studentEmails);
@@ -49,9 +49,7 @@ describe('TeacherService', () => {
         where: { email: { in: studentEmails }, suspended: false },
       });
 
-      expect(prismaMock.teacherStudents.createMany).toHaveBeenCalledWith({
-        data: teacherStudents,
-      });
+      expect(prismaMock.teacherStudents.upsert).toHaveBeenCalledTimes(2);
     });
 
     it('should throw NotFoundError if teacher not found', async () => {

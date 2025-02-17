@@ -1,21 +1,19 @@
-import { prisma } from '../lib/prisma';
-import { Student, TeacherStudents } from '@prisma/client';
+import { TeacherStudents } from '@prisma/client';
 import {
-  ERR_STUDENT_NOT_FOUND,
-  ERR_STUDENTS_NOT_FOUND,
-  ERR_TEACHER_NOT_FOUND,
-  ERR_TEACHERS_NOT_FOUND,
-} from '../constants';
+  MSG_STUDENT_NOT_FOUND,
+  MSG_STUDENTS_NOT_FOUND,
+  MSG_TEACHER_NOT_FOUND,
+  MSG_TEACHERS_NOT_FOUND,
+} from '../constants/messages.constants';
 import { NotFoundError } from '../errors/NotFoundError';
 import { extractEmailsFromNotification } from '../utils/notificationParser';
 import { TeacherRepository } from '../repositories/teacher.repository';
 import { StudentRepository } from '../repositories/student.repository';
-import { TeacherStudentepository } from '../repositories/teacherStudent.repository';
-import { record } from 'zod';
+import { TeacherStudentRepository } from '../repositories/teacherStudent.repository';
 
 const teacherRepo = new TeacherRepository();
 const studentRepo = new StudentRepository();
-const teacherStudentsRepo = new TeacherStudentepository();
+const teacherStudentsRepo = new TeacherStudentRepository();
 /**
  * Registers one or more students to a teacher
  * @param teacherEmail
@@ -25,26 +23,23 @@ export const registerStudents = async (
   teacherEmail: string,
   studentsEmails: string[],
 ) => {
-  // Find the teacher with the given email
+  // Check if the teacher exists
   const teacher = await teacherRepo.findByEmail(teacherEmail);
   if (!teacher) {
-    throw new NotFoundError(ERR_TEACHER_NOT_FOUND);
+    throw new NotFoundError(MSG_TEACHER_NOT_FOUND);
   }
 
-  // Find all students with the given emails
+  // Check students exist
   const students =
     await studentRepo.findByEmailsWhereNotSuspended(studentsEmails);
   if (students.length !== studentsEmails.length) {
-    throw new NotFoundError(ERR_STUDENTS_NOT_FOUND);
+    throw new NotFoundError(MSG_STUDENTS_NOT_FOUND);
   }
 
   // Register the students to the teacher
-  const studentsToRegister = students.map((student: any) => ({
-    teacherId: teacher.id,
-    studentId: student.id,
-  }));
-
-  await teacherStudentsRepo.createMany(studentsToRegister);
+  students.forEach(async (student) => {
+    await teacherStudentsRepo.upsertTeacherStudent(teacher.id, student.id);
+  });
 };
 
 /**
@@ -56,7 +51,7 @@ export const getCommonStudents = async (teacherEmails: string[]) => {
 
   // Throw an error if found teachers are less than the given emails
   if (teachers.length !== teacherEmails.length) {
-    throw new NotFoundError(ERR_TEACHERS_NOT_FOUND);
+    throw new NotFoundError(MSG_TEACHERS_NOT_FOUND);
   }
 
   // Find students that registered to at least one teacher
@@ -81,7 +76,7 @@ export const getCommonStudents = async (teacherEmails: string[]) => {
 export const suspendStudent = async (studentEmail: string) => {
   const student = await studentRepo.findByEmail(studentEmail);
   if (!student) {
-    throw new NotFoundError(ERR_STUDENT_NOT_FOUND);
+    throw new NotFoundError(MSG_STUDENT_NOT_FOUND);
   }
   await studentRepo.updateStudentSuspended(studentEmail, true);
 };
@@ -96,24 +91,28 @@ export const retrieveForNotifications = async (
   teacherEmail: string,
   notification: string,
 ) => {
+  // Check if the teacher exists
   const teacher = await teacherRepo.findByEmail(teacherEmail);
   if (!teacher) {
-    throw new NotFoundError(ERR_TEACHER_NOT_FOUND);
+    throw new NotFoundError(MSG_TEACHER_NOT_FOUND);
   }
 
-  // Registered unsuspended
+  // Get registered unsuspended students
   const students = await studentRepo.findByTeacherId(teacher.id);
   const activeRegistered = students.map((s) => s.email);
 
-  // Mentioned unsuspended
+  // Get mentioned unsuspended students
   const mentionedEmails = extractEmailsFromNotification(notification);
   if (mentionedEmails.length === 0) {
     return activeRegistered;
   }
-  const recipientSet = new Set(activeRegistered);
+
   const activeMentioned =
     await studentRepo.findByEmailsWhereNotSuspended(mentionedEmails);
-  activeMentioned.forEach((s) => recipientSet.add(s.email));
+  const recipientSet = new Set([
+    ...activeRegistered,
+    ...activeMentioned.map((s) => s.email),
+  ]);
 
   return Array.from(recipientSet);
 };
