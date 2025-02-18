@@ -1,16 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES2020", //if your Node.js version supports it (modern features like ?. and ??).
-    "module": "CommonJS", // if your project runs in Node.js with require() and module.exports.
-    "strict": true, // Enables all strict type-checking features for safer TS code
+    "target": "ES2020",
+    "module": "CommonJS",
+    "strict": true,
     "outDir": "./dist",
     "rootDir": "./",
-    "esModuleInterop": true, // Allows default import syntax (import express from "express";) for CommonJS modules.
-    "skipLibCheck": true // Skip type checking of all declaration files (*.d.ts), thirt-party libraries.
-    // "resolveJsonModule": true, // Allows importing JSON files as modules.
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "prisma/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
-
-// "module": "ESNext" if working with frontend or modern Node.js projects that need import/export.

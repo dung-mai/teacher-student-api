@@ -96,7 +96,7 @@ Call the first api to get response.
 To run migrations:
 
 ```bash
-npm run migration
+npm run prisma:migration
 ```
 
 ### 5.2. Seeding

@@ -20,7 +20,9 @@
     "lint": "npx eslint .",
     "prettier": "npx prettier --write .",
     "seed:dev": "ts-node prisma/seed.ts",
-    "seed": "node dist/prisma/seed.js"
+    "seed": "node dist/prisma/seed.js",
+    "prisma:generage": "npx prisma generage",
+    "prisma:migrate": "npx prisma migrate dev"
   },
   "author": "",
   "license": "ISC",
